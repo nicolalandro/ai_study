@@ -1,5 +1,21 @@
 import pandas as pd
 import numpy as np
+from sklearn.metrics import accuracy_score
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+
+def extract_data(partial_dataset):
+    x = []
+    y = []
+    for index, row in partial_dataset.iterrows():
+        if row['overall'] == 'potential':
+            continue
+        # x.append([int(row['overall']), count_vect.transform(row['full_name'])])
+        x.append([int(row['overall'])])
+        y.append(row['international_reputation'])
+    return x, y
+
 
 file_name = 'complete.csv'
 column_name = [
@@ -189,3 +205,16 @@ column_name = [
     'prefers_lcb',
     'prefers_gk',
 ]
+chunksize = 5000
+chunked_dataset = pd.read_csv(file_name, chunksize=chunksize, names=column_name, low_memory=False)
+counter = 0
+
+clf = DecisionTreeClassifier()
+
+for partial_dataset in chunked_dataset:
+    print('<------------ CHUNK ------------>', counter)
+    counter += 1
+    x, y = extract_data(partial_dataset)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33)
+    clf.fit(x_train, y_train)
+    print("decision tree perecision: ", accuracy_score(y_test, clf.predict(x_test)))
