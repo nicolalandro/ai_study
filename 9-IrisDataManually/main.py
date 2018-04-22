@@ -40,16 +40,9 @@ model.fit(train_examples, train_truths, epochs=20, batch_size=32)
 loss_and_metrics = model.evaluate(test_examples, test_truths, batch_size=128)
 print("loss and metrics: ", loss_and_metrics)
 
-prediction = model.predict(test_truths, batch_size=128)
+prediction = model.predict(test_examples, batch_size=128)
 prediction = prediction.argmax(1)
 
 from sklearn.metrics import accuracy_score
 
 print("result with neural network: ", accuracy_score(test_truths, prediction))
-
-# for index, row in train_csv.iterrows():
-#     try:
-#         numeric_species = int(row['Species'])
-#         print(SPECIES[numeric_species])
-#     except:
-#         print(row['Species'])
