@@ -4,3 +4,7 @@ sklearn
 tensorflow
 keras
 pandas
+matplotlib
+seaborn
+bs4
+nltk
