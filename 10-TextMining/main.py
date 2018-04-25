@@ -1,20 +1,132 @@
 # https://www.kaggle.com/eliotbarr/text-mining-with-sklearn-keras-mlp-lstm-cnn
+import itertools
 import random
 import re
 
 import nltk
 import pandas as pd
+import numpy as np
 import seaborn as sns
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
 
 from nbsvm import NBSVM
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+from matplotlib import cm
+
+plt.style.use('ggplot')
+
+
+def plot_confusion_matrix(cm, classes,
+                          normalize=False,
+                          title='Confusion matrix',
+                          cmap=plt.cm.Blues):
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
+
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
+
+    print(cm)
+
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, cm[i, j],
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
+
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+
+
+def f1_class(pred, truth, class_val):
+    n = len(truth)
+
+    truth_class = 0
+    pred_class = 0
+    tp = 0
+
+    for ii in range(0, n):
+        if truth[ii] == class_val:
+            truth_class += 1
+            if truth[ii] == pred[ii]:
+                tp += 1
+                pred_class += 1
+                continue;
+        if pred[ii] == class_val:
+            pred_class += 1
+
+    precision = tp / float(pred_class)
+    recall = tp / float(truth_class)
+
+    return (2.0 * precision * recall) / (precision + recall)
+
+
+def semeval_senti_f1(pred, truth, pos=2, neg=0):
+    f1_pos = f1_class(pred, truth, pos)
+    f1_neg = f1_class(pred, truth, neg)
+
+    return (f1_pos + f1_neg) / 2.0;
+
+
+def main(train_file, test_file, ngram=(1, 3)):
+    print('loading...')
+    train = pd.read_csv(train_file, delimiter='\t', encoding='utf-8', header=0,
+                        names=['text', 'label'])
+
+    # to shuffle:
+    # train.iloc[np.random.permutation(len(df))]
+
+    test = pd.read_csv(test_file, delimiter='\t', encoding='utf-8', header=0,
+                       names=['text', 'label'])
+
+    print('vectorizing...')
+    vect = CountVectorizer()
+    classifier = NBSVM()
+
+    # create pipeline
+    clf = Pipeline([('vect', vect), ('nbsvm', classifier)])
+    params = {
+        'vect__token_pattern': r"\S+",
+        'vect__ngram_range': ngram,
+        'vect__binary': True
+    }
+    clf.set_params(**params)
+
+    # X_train = vect.fit_transform(train['text'])
+    # X_test = vect.transform(test['text'])
+
+    print('fitting...')
+    clf.fit(train['text'], train['label'])
+
+    print('classifying...')
+    pred = clf.predict(test['text'])
+
+    print('testing...')
+    acc = accuracy_score(test['label'], pred)
+    f1 = semeval_senti_f1(pred, test['label'])
+    print('NBSVM: acc=%f, f1=%f' % (acc, f1))
+
 
 english_stemmer = nltk.stem.SnowballStemmer('english')
 
@@ -103,7 +215,23 @@ pred_4 = model4.predict(test_features.toarray())
 pred_5 = model5.predict(test_features)
 
 print("MultinomialNB accuracy_score: ", accuracy_score(test["Rating"], pred_1))
+print(classification_report(test['Rating'], pred_1, target_names=['1', '2', '3', '4', '5']))
+cnf_matrix = confusion_matrix(test['Rating'], pred_1)
+plot_confusion_matrix(cnf_matrix, classes=['1', '2', '3', '4', '5'],
+                      title='Confusion matrix, without normalization')
+
 print("SGDClassifier accuracy_score: ", accuracy_score(test["Rating"], pred_2))
+print(classification_report(test['Rating'], pred_2, target_names=['1', '2', '3', '4', '5']))
+
 print("RandomForestClassifier accuracy_score: ", accuracy_score(test["Rating"], pred_3))
+print(classification_report(test['Rating'], pred_3, target_names=['1', '2', '3', '4', '5']))
+
 print("GradientBoostingClassifier accuracy_score: ", accuracy_score(test["Rating"], pred_4))
+print(classification_report(test['Rating'], pred_4, target_names=['1', '2', '3', '4', '5']))
+
 print("NBSVM accuracy_score: ", accuracy_score(test["Rating"], pred_5))
+print(classification_report(test['Rating'], pred_5, target_names=['1', '2', '3', '4', '5']))
+
+# https://www.kaggle.com/eliotbarr/text-mining-with-sklearn-keras-mlp-lstm-cnn
+# Non fatto da:
+# Deep Learning MLP
