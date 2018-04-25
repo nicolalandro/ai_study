@@ -1,20 +1,18 @@
 # https://www.kaggle.com/eliotbarr/text-mining-with-sklearn-keras-mlp-lstm-cnn
 import random
 import re
-from urllib.request import urlopen
 
 import nltk
+import pandas as pd
+import seaborn as sns
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
-import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.linear_model import SGDClassifier
-from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-import seaborn as sns
 from sklearn.naive_bayes import MultinomialNB
+from nbsvm import NBSVM
 
 english_stemmer = nltk.stem.SnowballStemmer('english')
 
@@ -93,9 +91,13 @@ model3.fit(train_features, train["Rating"])
 model4 = GradientBoostingClassifier()
 model4.fit(train_features, train["Rating"])
 
+model5 = NBSVM(C=0.01)
+model5.fit(train_features, train["Rating"])
+
 pred_1 = model1.predict(test_features.toarray())
 pred_2 = model2.predict(test_features.toarray())
 pred_3 = model3.predict(test_features.toarray())
 pred_4 = model4.predict(test_features.toarray())
+pred_5 = model5.predict(test_features)
 
 print(pred_1)
