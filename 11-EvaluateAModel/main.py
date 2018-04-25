@@ -22,6 +22,7 @@ sns_plot = seaborn.heatmap(cnf_matrix, annot=True, fmt="d", center=0)
 sns_plot.figure.savefig("cnf_matrix.png")
 
 normalized_cnf_matrix = cnf_matrix.astype('float') / cnf_matrix.sum(axis=1)[:, np.newaxis]
+print(normalized_cnf_matrix)
 sns_plot = seaborn.heatmap(normalized_cnf_matrix, annot=True, center=0)
 sns_plot.figure.savefig("normalized_cnf_matrix.png")
 
