@@ -1,14 +1,20 @@
 # https://www.kaggle.com/eliotbarr/text-mining-with-sklearn-keras-mlp-lstm-cnn
 import random
 import re
+from urllib.request import urlopen
 
 import nltk
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.linear_model import SGDClassifier
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 import seaborn as sns
+from sklearn.naive_bayes import MultinomialNB
 
 english_stemmer = nltk.stem.SnowballStemmer('english')
 
@@ -18,7 +24,7 @@ def review_to_wordlist(review, remove_stopwords=True):
     # optionally removing stop words.  Returns a list of words.
 
     # 1. Remove HTML
-    review_text = BeautifulSoup(review).get_text()
+    review_text = BeautifulSoup(review, "html.parser").get_text()
 
     # 2. Remove non-letters
     review_text = re.sub("[^a-zA-Z]", " ", review)
@@ -46,9 +52,9 @@ n = 413000
 s = 20000
 skip = sorted(random.sample(range(1, n), n - s))
 
-data = pd.read_csv(data_file, delimiter=",", skiprows=skip)
-print(data.shape)
-data = data[data['Reviews'].isnull() == False]
+all_data = pd.read_csv(data_file, delimiter=",", skiprows=skip)
+print(all_data.shape)
+data = all_data[all_data['Reviews'].isnull() == False]
 train, test = train_test_split(data, test_size=0.3)
 
 sns_plot = sns.countplot(data['Rating'])
@@ -69,3 +75,27 @@ vectorizer = vectorizer.fit(clean_train_reviews)
 train_features = vectorizer.transform(clean_train_reviews)
 
 test_features = vectorizer.transform(clean_test_reviews)
+
+# Select best features
+# fselect = SelectKBest(chi2, k=10000)
+# train_features = fselect.fit_transform(train_features, train["Rating"])
+# test_features = fselect.transform(test_features)
+
+model1 = MultinomialNB(alpha=0.001)
+model1.fit(train_features, train["Rating"])
+
+model2 = SGDClassifier(loss='modified_huber', n_iter=5, random_state=0, shuffle=True)
+model2.fit(train_features, train["Rating"])
+
+model3 = RandomForestClassifier()
+model3.fit(train_features, train["Rating"])
+
+model4 = GradientBoostingClassifier()
+model4.fit(train_features, train["Rating"])
+
+pred_1 = model1.predict(test_features.toarray())
+pred_2 = model2.predict(test_features.toarray())
+pred_3 = model3.predict(test_features.toarray())
+pred_4 = model4.predict(test_features.toarray())
+
+print(pred_1)
