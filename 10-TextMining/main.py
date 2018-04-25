@@ -12,6 +12,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+
 from nbsvm import NBSVM
 
 english_stemmer = nltk.stem.SnowballStemmer('english')
@@ -100,4 +102,8 @@ pred_3 = model3.predict(test_features.toarray())
 pred_4 = model4.predict(test_features.toarray())
 pred_5 = model5.predict(test_features)
 
-print(pred_1)
+print("MultinomialNB accuracy_score: ", accuracy_score(test["Rating"], pred_1))
+print("SGDClassifier accuracy_score: ", accuracy_score(test["Rating"], pred_2))
+print("RandomForestClassifier accuracy_score: ", accuracy_score(test["Rating"], pred_3))
+print("GradientBoostingClassifier accuracy_score: ", accuracy_score(test["Rating"], pred_4))
+print("NBSVM accuracy_score: ", accuracy_score(test["Rating"], pred_5))
