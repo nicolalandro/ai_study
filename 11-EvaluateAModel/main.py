@@ -11,14 +11,21 @@ x = iris.data
 y = iris.target
 sns_plot = seaborn.countplot(y)
 sns_plot.figure.savefig("rating.png")
+plt.close()
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33)
+
+sns_plot = seaborn.countplot(y_test)
+sns_plot.figure.savefig("rating_test.png")
+plt.close()
+
+sns_plot = seaborn.countplot(y_train)
+sns_plot.figure.savefig("rating_train.png")
+plt.close()
 
 decision_tree = DecisionTreeClassifier()
 decision_tree.fit(x_train, y_train)
 decision_tree_predictions = decision_tree.predict(x_test)
-
-plt.close()
 
 cnf_matrix = confusion_matrix(y_test, decision_tree_predictions)
 sns_plot = seaborn.heatmap(cnf_matrix, annot=True, center=0)
