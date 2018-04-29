@@ -1,6 +1,7 @@
 from sklearn.ensemble import ExtraTreesClassifier
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 
@@ -22,7 +23,7 @@ decision_tree.fit(transformed_train_example, train_truths)
 transform_test_example = dictionary.transform(test_examples)
 prediction = decision_tree.predict(transform_test_example)
 
-print(prediction)
+# print(prediction)
 
 text_clf_extra_tree = Pipeline([('vect', CountVectorizer()),
                                 ('clf-extra-tree',
@@ -31,4 +32,16 @@ text_clf_extra_tree = Pipeline([('vect', CountVectorizer()),
                                 ])
 text_clf_extra_tree.fit(train_examples, train_truths)
 text_clf_prediction = text_clf_extra_tree.predict(test_examples)
-print(text_clf_prediction)
+# print(text_clf_prediction)
+print("Extra tree with count vectorizer only perecision: ", accuracy_score(test_truths, text_clf_prediction))
+
+text_clf_with_tfidf = Pipeline([
+    ('vect', CountVectorizer()),
+    ('tfidf', TfidfTransformer()),
+    ('clf-extra-tree',
+     ExtraTreesClassifier(n_estimators=100, n_jobs=12, bootstrap=False, min_samples_split=2,
+                          random_state=0))
+])
+text_clf_with_tfidf.fit(train_examples, train_truths)
+text_clf_with_tfidf_prediction = text_clf_with_tfidf.predict(test_examples)
+print("Extra tree with tfidf perecision: ", accuracy_score(test_truths, text_clf_with_tfidf_prediction))
