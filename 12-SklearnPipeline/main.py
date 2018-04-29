@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
+from sklearn.tree import DecisionTreeClassifier
 
 examples = []
 truths = []
@@ -52,4 +53,13 @@ s = pickle.dumps(text_clf_with_tfidf)
 clf_restored = pickle.loads(s)
 clf_restored.fit(train_examples, train_truths)
 clf_restored_prediction = clf_restored.predict(test_examples)
-print(clf_restored_prediction)
+# print(clf_restored_prediction)
+
+clf = Pipeline([
+    ('vect', CountVectorizer()),
+    ('tfidf', TfidfTransformer()),
+    ('clf', DecisionTreeClassifier())
+])
+clf.fit(train_examples, train_truths)
+clf_prediction = clf.predict(test_examples)
+print("decision tree perecision: ", accuracy_score(test_truths, clf_prediction))
