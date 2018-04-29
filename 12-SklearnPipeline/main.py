@@ -1,3 +1,5 @@
+import pickle
+
 from sklearn.ensemble import ExtraTreesClassifier
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
@@ -45,3 +47,9 @@ text_clf_with_tfidf = Pipeline([
 text_clf_with_tfidf.fit(train_examples, train_truths)
 text_clf_with_tfidf_prediction = text_clf_with_tfidf.predict(test_examples)
 print("Extra tree with tfidf perecision: ", accuracy_score(test_truths, text_clf_with_tfidf_prediction))
+
+s = pickle.dumps(text_clf_with_tfidf)
+clf_restored = pickle.loads(s)
+clf_restored.fit(train_examples, train_truths)
+clf_restored_prediction = clf_restored.predict(test_examples)
+print(clf_restored_prediction)
