@@ -8,3 +8,4 @@ matplotlib
 seaborn
 bs4
 nltk
+h5py
