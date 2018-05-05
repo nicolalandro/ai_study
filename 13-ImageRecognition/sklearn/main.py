@@ -1,7 +1,7 @@
-from sklearn import datasets
+from sklearn.datasets import load_digits
 from sklearn import svm
 
-digits = datasets.load_digits()
+digits = load_digits()
 
 data = digits.data
 target = digits.target
