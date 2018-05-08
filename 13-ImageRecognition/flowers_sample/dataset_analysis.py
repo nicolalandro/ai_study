@@ -1,9 +1,7 @@
 import glob
 import os
-import pandas as pd
 
-import matplotlib.pyplot as plt
-import seaborn
+import pandas as pd
 from PIL import Image
 
 base_dir = '../flowers'
@@ -32,8 +30,4 @@ for class_name in classes_folders:
 
 pd_value = pd.DataFrame.from_dict(dict_s)
 
-print(pd_value[['h', 'w', 'size']].agg(['mean']))
-# print(pd_value.groupby('class_name').size())
-# sns_plot = seaborn.countplot(pd_value.groupby('class_name').size())
-# sns_plot.figure.savefig("rating.png")
-# plt.close()
+print(pd_value[['h', 'w', 'size']].agg(['mean', 'median', 'max', 'min']))
