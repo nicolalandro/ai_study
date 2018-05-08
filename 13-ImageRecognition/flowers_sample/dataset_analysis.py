@@ -30,4 +30,5 @@ for class_name in classes_folders:
 
 pd_value = pd.DataFrame.from_dict(dict_s)
 
+print(pd_value[['class_name']].groupby('class_name').size().reset_index(name='counts'))
 print(pd_value[['h', 'w', 'size']].agg(['mean', 'median', 'max', 'min']))
