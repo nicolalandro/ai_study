@@ -1,7 +1,7 @@
 import pickle
 
 import pandas as pd
-from sklearn.cluster import Birch
+from sklearn.cluster import Birch, KMeans
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score

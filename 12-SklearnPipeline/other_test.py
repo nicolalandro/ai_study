@@ -1,10 +1,10 @@
 import pandas as pd
-from sklearn.cluster import Birch, KMeans
-from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.cluster import MiniBatchKMeans
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
+from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 
 examples = []
 truths = []
@@ -19,8 +19,8 @@ train_examples, test_examples, train_truths, test_truths = train_test_split(exam
 clf = Pipeline([
     ('vect', CountVectorizer()),
     ('tfidf', TfidfTransformer()),
-    ('automatic', KMeans(n_clusters=80)),
-    ('clf', ExtraTreesClassifier())
+    ('automatic', MiniBatchKMeans(n_clusters=80)),
+    ('clf', ExtraTreeClassifier())
 ])
 clf.fit(train_examples, train_truths)
 clf_prediction = clf.predict(test_examples)
