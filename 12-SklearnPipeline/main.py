@@ -1,7 +1,9 @@
 import pickle
 
-from sklearn.ensemble import ExtraTreesClassifier
 import pandas as pd
+from sklearn.cluster import Birch
+from sklearn.cluster import AffinityPropagation
+from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
@@ -63,3 +65,13 @@ clf = Pipeline([
 clf.fit(train_examples, train_truths)
 clf_prediction = clf.predict(test_examples)
 print("decision tree perecision: ", accuracy_score(test_truths, clf_prediction))
+
+clf = Pipeline([
+    ('vect', CountVectorizer()),
+    ('tfidf', TfidfTransformer()),
+    ('automatic', Birch()),
+    ('clf', ExtraTreesClassifier())
+])
+clf.fit(train_examples, train_truths)
+clf_prediction = clf.predict(test_examples)
+print("Birch + ExtraTree: ", accuracy_score(test_truths, clf_prediction))
