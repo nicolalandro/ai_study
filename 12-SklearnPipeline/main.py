@@ -6,6 +6,7 @@ from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.tree import DecisionTreeClassifier
 
@@ -84,3 +85,13 @@ clf = Pipeline([
 clf.fit(train_examples, train_truths)
 clf_prediction = clf.predict(test_examples)
 print("KMeans + ExtraTree: ", accuracy_score(test_truths, clf_prediction))
+
+clf = Pipeline([
+    ('vect', CountVectorizer()),
+    ('tfidf', TfidfTransformer()),
+    ('automatic', Birch()),
+    ('clf', KNeighborsClassifier(n_neighbors=10))
+])
+clf.fit(train_examples, train_truths)
+clf_prediction = clf.predict(test_examples)
+print("Birch + KNeighbors: ", accuracy_score(test_truths, clf_prediction))
