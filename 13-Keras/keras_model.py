@@ -1,5 +1,5 @@
 import keras
-from keras import Sequential, Input
+from keras import Sequential
 from keras.layers import Dense
 
 
@@ -14,7 +14,7 @@ class KerasModel:
                            optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, nesterov=True))
 
     def fit(self, x, y):
-        self.model.fit(x, y, epochs=20, batch_size=32)
+        self.model.fit(x, y, epochs=30, batch_size=32)
 
     def predict(self, x):
         return self.model.predict(x, batch_size=128)
