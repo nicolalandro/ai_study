@@ -38,3 +38,5 @@ clf.fit(train_examples, train_truths)
 pred = clf.predict(test_examples).argmax(1)
 
 print("Extra tree with count vectorizer perecision: ", accuracy_score(le.transform(test_truths), pred))
+
+print(le.inverse_transform(clf.predict(["rossetto rosso"]).argmax(1)[0]))
