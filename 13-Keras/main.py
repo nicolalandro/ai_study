@@ -31,7 +31,7 @@ le = LabelEncoder()
 le.fit(train_truths)
 train_truths = le.transform(train_truths)
 
-clf = Pipeline([('vect', TfidfVectorizer(use_idf=True, max_features=4000)),
+clf = Pipeline([('vect', CountVectorizer(max_features=4000)),
                 ('clf-keras', KerasModel())
                 ])
 clf.fit(train_examples, train_truths)
