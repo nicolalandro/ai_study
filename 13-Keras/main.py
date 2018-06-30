@@ -25,8 +25,6 @@ text_clf_extra_tree = Pipeline([('vect', CountVectorizer()),
 text_clf_extra_tree.fit(train_examples, train_truths)
 text_clf_prediction = text_clf_extra_tree.predict(test_examples)
 
-print("Extra tree with count vectorizer perecision: ", accuracy_score(test_truths, text_clf_prediction))
-
 le = LabelEncoder()
 le.fit(train_truths)
 train_truths = le.transform(train_truths)
@@ -38,6 +36,7 @@ clf = Pipeline([
 clf.fit(train_examples, train_truths)
 pred = clf.predict(test_examples).argmax(1)
 
+print("Extra tree with count vectorizer perecision: ", accuracy_score(test_truths, text_clf_prediction))
 print("Keras with count vectorizer perecision: ", accuracy_score(le.transform(test_truths), pred))
 
 print(le.inverse_transform(clf.predict(["rossetto rosso"]).argmax(1)[0]))
