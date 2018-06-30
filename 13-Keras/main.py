@@ -1,10 +1,10 @@
 import pandas as pd
+from keras_model import KerasModel
 from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from keras_model import KerasModel
 from sklearn.preprocessing import LabelEncoder
 
 examples = []
@@ -31,12 +31,13 @@ le = LabelEncoder()
 le.fit(train_truths)
 train_truths = le.transform(train_truths)
 
-clf = Pipeline([('vect', CountVectorizer(max_features=4000)),
-                ('clf-keras', KerasModel())
-                ])
+clf = Pipeline([
+    ('vect', CountVectorizer(max_features=4000)),
+    ('clf-keras', KerasModel())
+])
 clf.fit(train_examples, train_truths)
 pred = clf.predict(test_examples).argmax(1)
 
-print("Extra tree with count vectorizer perecision: ", accuracy_score(le.transform(test_truths), pred))
+print("Keras with count vectorizer perecision: ", accuracy_score(le.transform(test_truths), pred))
 
 print(le.inverse_transform(clf.predict(["rossetto rosso"]).argmax(1)[0]))
