@@ -7,13 +7,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 
-examples = []
-truths = []
-
-dataset = pd.read_csv('../12-SklearnPipeline/makeup_dataset.csv', sep='|')
-for index, row in dataset.iterrows():
-    examples.append(str(row[1]) + ' ' + str(row[2]))
-    truths.append(str(row[4]))
+dataset = pd.read_csv(
+    '../12-SklearnPipeline/makeup_dataset.csv',
+    sep='|',
+    names=['id', 'title', 'description', 'void', 'truth']
+)
+dataset = dataset.fillna('')
+truths = dataset['truth']
+examples = dataset['title'].map(str) + ' ' + dataset['description']
 
 train_examples, test_examples, train_truths, test_truths = train_test_split(examples, truths, test_size=0.33)
 
