@@ -1,11 +1,14 @@
 import glob
 import os
 
-import pandas as pd
+import numpy as np
 from PIL import Image
+from keras.models import load_model
+from keras.preprocessing.image import load_img, img_to_array
 
 base_dir = '/home/mint/.kaggle/datasets/alxmamaev/flowers-recognition/flowers'
 classes_folders = os.listdir(base_dir)
+img_width, img_height = 150, 150
 
 dict_s = {
     'file_path': [],
@@ -30,6 +33,13 @@ for class_name in classes_folders:
 
 pd_value = pd.DataFrame.from_dict(dict_s)
 
-print(pd_value[['class_name']].groupby('class_name').size().reset_index(name='counts'))
-print(pd_value[['h', 'w', 'size']].agg(['mean', 'median', 'max', 'min']))
+model_path = './models/model.h5'
+model_weights_path = './models/weights.h5'
+model = load_model(model_path)
+model.load_weights(model_weights_path)
 
+x = load_img(pd_value['file_path'][200], target_size=(img_width, img_height))
+x = img_to_array(x)
+x = np.expand_dims(x, axis=0)
+result = model.predict(x)
+print(classes_folders[int(result.argmax(1))])
