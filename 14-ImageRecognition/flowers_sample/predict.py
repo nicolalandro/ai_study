@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 from keras.models import load_model
 from keras.preprocessing.image import load_img, img_to_array
+import pandas as pd
 
 base_dir = '/home/mint/.kaggle/datasets/alxmamaev/flowers-recognition/flowers'
 classes_folders = os.listdir(base_dir)
@@ -33,8 +34,8 @@ for class_name in classes_folders:
 
 pd_value = pd.DataFrame.from_dict(dict_s)
 
-model_path = './models/model.h5'
-model_weights_path = './models/weights.h5'
+model_path = './model.h5'
+model_weights_path = './weights.h5'
 model = load_model(model_path)
 model.load_weights(model_weights_path)
 
