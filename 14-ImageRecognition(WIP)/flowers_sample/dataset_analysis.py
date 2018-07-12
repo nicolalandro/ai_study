@@ -4,7 +4,7 @@ import os
 import pandas as pd
 from PIL import Image
 
-base_dir = '../flowers'
+base_dir = '/home/mint/.kaggle/datasets/alxmamaev/flowers-recognition/flowers'
 classes_folders = os.listdir(base_dir)
 
 dict_s = {
