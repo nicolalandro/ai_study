@@ -9,5 +9,4 @@ venv
 13-ImageRecognition/flowers-recognition.zip
 13-ImageRecognition/flowers
 7-ExtraTreeClassifier/trees
-14-ImageRecognition/flowers_sample/model.h5
-14-ImageRecognition/flowers_sample/weights.h5
+14-ImageRecognition/flowers_sample/*.h5

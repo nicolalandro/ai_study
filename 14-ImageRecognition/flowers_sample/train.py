@@ -40,7 +40,7 @@ train_generator = train_datagen.flow_from_directory(
 model.fit_generator(
     train_generator,
     samples_per_epoch=1000,
-    epochs=20)
+    epochs=50)
 
-model.save('model.h5')
-model.save_weights('weights.h5')
+model.save('50_model.h5')
+model.save_weights('50_weights.h5')
