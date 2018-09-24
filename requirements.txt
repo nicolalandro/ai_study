@@ -11,3 +11,4 @@ nltk
 h5py
 pillow
 pyqt5
+tqdm
