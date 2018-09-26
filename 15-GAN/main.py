@@ -117,7 +117,7 @@ def train(epochs=1, batch_size=128):
     gan = get_gan_network(discriminator, random_dim, generator, adam)
 
     for e in range(1, epochs + 1):
-        print('-' * 15, 'Epoch %d' % e, '-' * 15)
+        print('\n', '-' * 15, 'Epoch %d' % e, '-' * 15)
         for _ in tqdm(range(int(batch_count))):
             # Get a random set of input noise and images
             noise = np.random.normal(0, 1, size=[batch_size, random_dim])
@@ -142,9 +142,10 @@ def train(epochs=1, batch_size=128):
             discriminator.trainable = False
             gan.train_on_batch(noise, y_gen)
 
-        if e == 1 or e % 20 == 0:
-            plot_generated_images(e, generator)
+        # if e == 1 or e % 20 == 0:
+        #     plot_generated_images(e, generator)
+        plot_generated_images(e, generator)
 
 
 if __name__ == '__main__':
-    train(400, 128)
+    train(20, 128)
