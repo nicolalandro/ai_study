@@ -31,6 +31,28 @@ class TestKerasKoans(unittest.TestCase):
 
         self.assertEqual((2, 2), prediction.shape)
 
+    def test_mlp_multi_dim(self):
+        train = np.array([
+            [[0, 1], [0, 0], [1, 1]],
+            [[1, 1], [1, 0], [0, 1]]
+        ])
+
+        truth = np.array([
+            [[0, 1], [0, 0], [0, 0]],
+            [[1, 1], [0, 0], [0, 0]]
+        ])
+        model = Sequential()
+        model.add(Dense(units=32, activation='relu', input_shape=(3, 2)))
+        model.add(Dense(units=16, activation='relu', input_dim=32))
+        model.add(Dense(2, activation='softmax', input_dim=16))
+        model.compile(loss=keras.losses.categorical_crossentropy,
+                      optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, nesterov=True))
+        model.summary()
+        model.fit(train, truth, epochs=1, batch_size=2, verbose=0)
+
+        prediction = model.predict(train)
+        self.assertEqual((2, 3, 2), prediction.shape)
+
 
 if __name__ == '__main__':
     unittest.main()
