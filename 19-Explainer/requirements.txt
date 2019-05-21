@@ -1,4 +1,4 @@
-shap
+shap==0.29.1
 
 numpy
 scipy
